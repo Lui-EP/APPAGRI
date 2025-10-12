@@ -482,9 +482,21 @@ form select:focus {
     margin-left: 4px;
 }
 
-.peso-neto {
-    color: #15803d !important;
+/* ===== CAMPO PESO NETO ===== */
+.neto-input {
+    background: #f0fdf4 !important;   /* verde claro en modo claro */
+    color: #15803d;
+    font-weight: 700;
 }
+
+/* Modo oscuro: fondo y texto más legibles */
+body.dark-mode .neto-input {
+    background:  #415d8e !important;   /* azul oscuro */
+    color: #ffffff !important;        /* texto blanco */
+    border-color: 1px solid  #1a2537;;        /* borde azul brillante */
+ 
+}
+
 
 .btn-delete {
     padding: 8px 16px;
