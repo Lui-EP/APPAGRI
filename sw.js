@@ -1,4 +1,4 @@
-const CACHE_NAME = 'agricola-cache-v1';
+const CACHE_NAME = 'agricola-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -32,3 +32,4 @@ self.addEventListener('activate', event => {
     )
   );
 });
+
