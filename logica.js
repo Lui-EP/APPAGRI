@@ -15,25 +15,33 @@ function toast(msg, type = "success") {
     alert.className = `alert ${type}`;
     alert.textContent = msg;
     alerts.appendChild(alert);
-    setTimeout(() => alert.remove(), 2800);
+    setTimeout(() => alert.remove(), 3000);
 }
 
 // ===== API HELPER =====
 async function api(url, method = "GET", body) {
-    const opts = { method, headers: { "Content-Type": "application/json" } };
-    if (body) opts.body = JSON.stringify(body);
-    try {
-        const r = await fetch(url, opts);
-        if (!r.ok) {
-            const txt = await r.text().catch(() => "");
-            throw new Error(`HTTP ${r.status} - ${txt}`);
-        }
-        return r.status === 204 ? null : await r.json();
-    } catch (err) {
-        console.error("API Error:", err);
-        throw err;
+  const opts = {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
     }
+  };
+  if (body) opts.body = JSON.stringify(body);
+
+  try {
+    const r = await fetch(url, opts); // ✅ corregido aquí
+    if (!r.ok) {
+      const txt = await r.text().catch(() => "");
+      throw new Error(`HTTP ${r.status} - ${txt}`);
+    }
+    return r.status === 204 ? null : await r.json();
+  } catch (err) {
+    console.error("API Error:", err);
+    throw err;
+  }
 }
+
 
 // ===== AUTENTICACIÓN =====
 function iniciarSesion(username, password) {
@@ -131,48 +139,51 @@ async function eliminarCliente(id) {
     }
 }
 
-// ===== EDITAR CLIENTE =====
-document.addEventListener("DOMContentLoaded", () => {
+// ===== EDITAR CLIENTE (CORREGIDO) =====
+function inicializarEdicionClientes() {
     const editarSelect = document.getElementById("editarClienteSelect");
-    if (editarSelect) {
-        editarSelect.addEventListener("change", (e) => {
-            const clienteId = parseInt(e.target.value);
-            const cliente = clientes.find(c => c.id === clienteId);
+    const formEditar = document.getElementById("form-editar-cliente");
 
-            if (cliente) {
-                document.getElementById("editarNombre").value = cliente.nombre;
-                document.getElementById("editarApellidos").value = cliente.apellidos;
-                document.getElementById("editarTelefono").value = cliente.telefono;
-            } else {
-                document.getElementById("form-editar-cliente").reset();
-            }
-        });
+    editarSelect.addEventListener("change", () => {
+        const clienteId = parseInt(editarSelect.value);
+        const cliente = clientes.find(c => c.id === clienteId);
 
-        document.getElementById("form-editar-cliente").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const id = parseInt(document.getElementById("editarClienteSelect").value);
-            const nombre = document.getElementById("editarNombre").value;
-            const apellidos = document.getElementById("editarApellidos").value;
-            const telefono = document.getElementById("editarTelefono").value;
+        if (cliente) {
+            document.getElementById("editarNombre").value = cliente.nombre;
+            document.getElementById("editarApellidos").value = cliente.apellidos;
+            document.getElementById("editarTelefono").value = cliente.telefono;
+        } else {
+            formEditar.reset();
+        }
+    });
 
-            if (!id) {
-                toast("Selecciona un cliente", "error");
-                return;
-            }
+    formEditar.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = parseInt(editarSelect.value);
+        if (!id) {
+            toast("Selecciona un cliente", "error");
+            return;
+        }
 
-            try {
-                await api(`${ENDPOINT_CLIENTES}/${id}`, "PUT", { nombre, apellidos, telefono });
-                toast("Cliente actualizado correctamente");
-                await cargarClientes();
-                e.target.reset();
-                document.getElementById("editarClienteSelect").value = "";
-            } catch (err) {
-                console.error(err);
-                toast("Error al actualizar cliente", "error");
-            }
-        });
-    }
-});
+        const payload = {
+            id, // incluir ID en el cuerpo
+            nombre: document.getElementById("editarNombre").value,
+            apellidos: document.getElementById("editarApellidos").value,
+            telefono: document.getElementById("editarTelefono").value
+        };
+
+        try {
+            await api(`${ENDPOINT_CLIENTES}/${id}`, "PUT", payload);
+            toast("Cliente actualizado correctamente");
+            await cargarClientes();
+            formEditar.reset();
+            editarSelect.value = "";
+        } catch (err) {
+            console.error(err);
+            toast("Error al actualizar cliente", "error");
+        }
+    });
+}
 
 // ===== REGISTROS =====
 async function cargarRegistros() {
@@ -227,18 +238,9 @@ function actualizarListaRegistros() {
                         </h4>
                     </div>
                     <div class="registro-details">
-                        <div class="detail-item">
-                            <span>Total:</span>
-                            <span>${pesoTotal} kg</span>
-                        </div>
-                        <div class="detail-item">
-                            <span>Camión:</span>
-                            <span>${pesoCamion} kg</span>
-                        </div>
-                        <div class="detail-item">
-                            <span>Neto:</span>
-                            <span class="peso-neto">${pesoNeto} kg</span>
-                        </div>
+                        <div class="detail-item"><span>Total:</span><span>${pesoTotal} kg</span></div>
+                        <div class="detail-item"><span>Camión:</span><span>${pesoCamion} kg</span></div>
+                        <div class="detail-item"><span>Neto:</span><span class="peso-neto">${pesoNeto} kg</span></div>
                     </div>
                 </div>
                 <button class="btn-delete" onclick="eliminarRegistro(${r.id})">Eliminar</button>
@@ -310,11 +312,8 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        if (iniciarSesion(username, password)) {
-            toast("¡Bienvenido!");
-        } else {
-            toast("Credenciales inválidas", "error");
-        }
+        if (iniciarSesion(username, password)) toast("¡Bienvenido!");
+        else toast("Credenciales inválidas", "error");
     });
 
     document.getElementById("form-cliente").addEventListener("submit", async (e) => {
@@ -323,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = Object.fromEntries(fd.entries());
         try {
             await api(ENDPOINT_CLIENTES, "POST", payload);
-            toast("Cliente guardado");
+            toast("Cliente guardado correctamente");
             e.target.reset();
             await cargarClientes();
         } catch (err) {
@@ -344,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         try {
             await api(ENDPOINT_REGISTROS, "POST", payload);
-            toast("Registro guardado");
+            toast("Registro guardado correctamente");
             e.target.reset();
             e.target.pesoNeto.value = "0.00";
             await cargarRegistros();
@@ -372,6 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== INIT =====
 async function init() {
     await cargarClientes();
+    inicializarEdicionClientes(); // <--- se llama después de cargar clientes
     await cargarRegistros();
 }
 
@@ -379,8 +379,8 @@ async function init() {
 document.addEventListener("DOMContentLoaded", () => {
     const toggleBtn = document.getElementById("toggle-theme");
     const body = document.body;
-
     const savedTheme = localStorage.getItem("theme");
+
     if (savedTheme === "dark") {
         body.classList.add("dark-mode");
         toggleBtn.textContent = "🌞 Modo Claro";
@@ -398,7 +398,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const toggleLoginTheme = document.getElementById("login-theme-toggle");
     const body = document.body;
-
     if (!toggleLoginTheme) return;
 
     const savedTheme = localStorage.getItem("theme");
