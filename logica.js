@@ -103,13 +103,14 @@ function actualizarListaClientes() {
     }
 
     lista.innerHTML = filtrados.map(c => `
-        <div class="list-item">
-            <div class="item-info">
-                <h4>${c.nombre} ${c.apellidos}</h4>
-                <p>📞 ${c.telefono}</p>
-            </div>
-            <button class="btn-delete" onclick="eliminarCliente(${c.id})">Eliminar</button>
-        </div>
+        <div class="list-item" onclick="window.location.href='perfil.html?id=${c.id}'" style="cursor:pointer;">
+  <div class="item-info">
+      <h4>${c.nombre} ${c.apellidos}</h4>
+      <p>📞 ${c.telefono}</p>
+  </div>
+  <button class="btn-delete" onclick="event.stopPropagation(); eliminarCliente(${c.id});">Eliminar</button>
+</div>
+
     `).join("");
 }
 
@@ -413,3 +414,4 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", isDark ? "dark" : "light");
     });
 });
+
