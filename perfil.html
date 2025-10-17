@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil del Cliente - Sistema Agrícola</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🌽</span>
+        <div>
+          <h1>Perfil del Cliente</h1>
+          <p>Sistema Agrícola</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <button class="btn-logout" onclick="window.location.href='principal.html'">⬅️ Volver</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="view-content visible">
+    <div class="card">
+      <div class="card-header">
+        <h3>👤 Información del Cliente</h3>
+      </div>
+      <div id="perfil-detalle" class="registro-details"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-label">Total Registros</span>
+        <span class="stat-value" id="perfil-total-registros">0</span>
+      </div>
+      <div class="stat-card stat-amber">
+        <span class="stat-label">Peso Neto Total</span>
+        <span class="stat-value" id="perfil-peso-total">0.00 kg</span>
+      </div>
+      <div class="stat-card stat-emerald">
+        <span class="stat-label">Promedio Neto</span>
+        <span class="stat-value" id="perfil-peso-promedio">0.00 kg</span>
+      </div>
+    </div>
+
+    <div class="card card-wide">
+      <div class="card-header">
+        <h3>📜 Historial de Registros</h3>
+      </div>
+      <div id="perfil-historial" class="list-container"></div>
+    </div>
+  </main>
+
+  <script src="perfil.js"></script>
+</body>
+</html>

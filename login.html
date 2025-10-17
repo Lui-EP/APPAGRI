@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingreso - Sistema Agrícola</title>
+  <meta name="theme-color" content="#4a7c2c">
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <div class="login-icon">🌽</div>
+      <h1>Sistema Agrícola</h1>
+      <p class="subtitle">Gestión de Peso - Maíz y Cacahuate</p>
+
+      <form id="login-form" autocomplete="off">
+        <input type="text" id="username" placeholder="Usuario" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button type="submit" class="btn-primary">Ingresar</button>
+
+        <button type="button" id="login-theme-toggle" class="btn-logout" style="margin-top:10px;">
+          🌓 Modo Oscuro
+        </button>
+
+        <p class="demo-info">Demo: admin / admin123</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================== -->
+  <!--    LÓGICA DEL LOGIN    -->
+  <!-- ====================== -->
+  <script src="login.js"></script>
+
+  <script>
+    // Service Worker (opcional)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registrado correctamente.'))
+        .catch(err => console.error('Error al registrar el Service Worker:', err));
+    }
+  </script>
+</body>
+</html>

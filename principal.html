@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <script>
+  if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark-mode");
+  }
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema Agrícola - Panel Principal</title>
+  <meta name="theme-color" content="#4a7c2c">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <!-- ====================== -->
+  <!--     ENCABEZADO         -->
+  <!-- ====================== -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">🌽</span>
+        <div>
+          <h1>Sistema Agrícola</h1>
+          <p>Maíz y Cacahuate</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <span>Hola, <strong id="user-name"></strong></span>
+        <button id="toggle-theme" class="btn-logout">🌓 Modo Oscuro</button>
+        <button id="logout-btn" class="btn-logout">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====================== -->
+  <!--        MENÚ NAV        -->
+  <!-- ====================== -->
+  <nav class="nav">
+    <button class="nav-item active" data-view="clientes" onclick="cambiarVista('clientes')">👥 Clientes</button>
+    <button class="nav-item" data-view="registros" onclick="cambiarVista('registros')">⚖️ Registros de Peso</button>
+  </nav>
+
+  <!-- ====================== -->
+  <!--        ALERTAS         -->
+  <!-- ====================== -->
+  <div id="alerts"></div>
+
+  <!-- ====================== -->
+  <!--     VISTA CLIENTES     -->
+  <!-- ====================== -->
+  <div id="view-clientes" class="view-content visible">
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-label">Total Clientes</span>
+        <span class="stat-value" id="client-count">0</span>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- FORM NUEVO CLIENTE -->
+      <div class="card">
+        <div class="card-header">
+          <h3>➕ Nuevo Cliente</h3>
+          <p>Registra un nuevo cliente</p>
+        </div>
+        <form id="form-cliente">
+          <label>Nombre</label>
+          <input type="text" name="nombre" placeholder="Nombre" required>
+
+          <label>Apellidos</label>
+          <input type="text" name="apellidos" placeholder="Apellidos" required>
+
+          <label>Teléfono</label>
+          <input type="text" name="telefono" placeholder="555-0000" required>
+
+          <button type="submit" class="btn-primary">Guardar Cliente</button>
+        </form>
+
+        <!-- FORM EDITAR CLIENTE -->
+        <div class="card" style="margin-top: 20px;">
+          <div class="card-header">
+            <h3>✏️ Modificar Cliente</h3>
+            <p>Edita los datos de un cliente existente</p>
+          </div>
+          <form id="form-editar-cliente">
+           
+            <label for="editarClienteSelect">Seleccionar cliente</label>
+            <input list="listaClientesEditar" id="editarClienteSelect" name="editarClienteSelect" placeholder="🔍 Escribe o selecciona..." class="search-input" required>
+            <datalist id="listaClientesEditar"></datalist>
+
+
+            <label>Nombre</label>
+            <input type="text" id="editarNombre" placeholder="Nombre" required>
+
+            <label>Apellidos</label>
+            <input type="text" id="editarApellidos" placeholder="Apellidos" required>
+
+            <label>Teléfono</label>
+            <input type="text" id="editarTelefono" placeholder="555-0000" required>
+
+            <button type="submit" class="btn-primary">Guardar Cambios</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- LISTA DE CLIENTES -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <h3>Lista de Clientes</h3>
+          <input type="text" id="search-clientes" placeholder="🔍 Buscar cliente..." class="search-input">
+        </div>
+        <div id="lista-clientes" class="list-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== -->
+  <!--    VISTA REGISTROS     -->
+  <!-- ====================== -->
+  <div id="view-registros" class="view-content">
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-label">Total Registros</span>
+        <span class="stat-value" id="registros-count">0</span>
+      </div>
+      <div class="stat-card stat-amber">
+        <span class="stat-label">Peso Neto Total</span>
+        <span class="stat-value" id="peso-total">0.00 kg</span>
+      </div>
+      <div class="stat-card stat-emerald">
+        <span class="stat-label">Promedio</span>
+        <span class="stat-value" id="peso-promedio">0.00 kg</span>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- FORM REGISTRO -->
+      <div class="card">
+        <div class="card-header">
+          <h3>➕ Nuevo Registro</h3>
+          <p>Registra un nuevo pesaje</p>
+        </div>
+        <form id="form-registro">
+          <label for="clienteInput">Cliente</label>
+            <input list="listaClientesRegistro" id="clienteInput" name="clienteInput" placeholder="🔍 Escribe o selecciona cliente..." class="search-input" required>
+            <datalist id="listaClientesRegistro"></datalist>
+
+
+          <label>Producto</label>
+          <select name="producto" required>
+            <option value="Maíz">Maíz</option>
+            <option value="Cacahuate">Cacahuate</option>
+          </select>
+
+          <label>Peso Total (kg)</label>
+          <input type="number" name="pesoTotal" step="0.01" placeholder="15000.00" required>
+
+          <label>Peso Camión (kg)</label>
+          <input type="number" name="pesoCamion" step="0.01" placeholder="8000.00" required>
+
+          <label>Peso Neto (kg)</label>
+          <input type="number" name="pesoNeto" step="0.01" readonly class="neto-input" value="0.00">
+
+          <button type="submit" class="btn-primary">Guardar Registro</button>
+        </form>
+      </div>
+
+      <!-- LISTA REGISTROS -->
+      <div class="card card-wide">
+        <div class="card-header">
+          <h3>Lista de Registros</h3>
+        </div>
+        <div class="filters">
+          <input type="text" id="search-registros" placeholder="🔍 Buscar registro..." class="search-input">
+          <select id="filter-producto" class="filter-select">
+            <option value="todos">Todos los productos</option>
+            <option value="Maíz">Solo Maíz</option>
+            <option value="Cacahuate">Solo Cacahuate</option>
+          </select>
+        </div>
+        <div id="lista-registros" class="list-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== -->
+  <!--  LÓGICA PRINCIPAL JS   -->
+  <!-- ====================== -->
+  <script src="principal.js"></script>
+</body>
+</html>
