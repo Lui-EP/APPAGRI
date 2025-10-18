@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ===== CERRAR SESIÓN =====
 document.getElementById("logout-btn").addEventListener("click", () => {
   localStorage.removeItem("usuarioActivo");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 });
 
 // ===== TOAST / ALERTAS =====
@@ -317,4 +317,5 @@ async function init() {
   inicializarEdicionClientes();
   await cargarRegistros();
 }
+
 
